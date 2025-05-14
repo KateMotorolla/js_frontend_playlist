@@ -1,6 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-class PlaylistAdd extends React.Component{
+class PlaylistAddInner  extends React.Component{
   constructor(props) {
     super(props);
 
@@ -46,6 +47,7 @@ class PlaylistAdd extends React.Component{
       return res.json();
     }).then((data) => {
       this.props.onTrackAdd(data);
+      this.props.history('/');
     });
   }
   render() {
@@ -57,6 +59,12 @@ class PlaylistAdd extends React.Component{
       </form>
         )
   }
+}
+
+const PlaylistAdd = (props) => {
+  return (
+    <PlaylistAddInner {...props} history = {useNavigate()} />
+  )
 }
 
 export default PlaylistAdd;
