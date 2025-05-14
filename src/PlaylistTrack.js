@@ -1,12 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { playlistDelete, playlistUpdateState } from './actions';
 
 class PlaylistTrack extends React.Component{
   constructor(props) {
     super(props);
 
-    this.state = {
-      liked: this.props.track.liked
-    }
     this.onStatusClick = this.onStatusClick.bind(this);
     this.onDeleteClick = this.onDeleteClick.bind(this);
   }
@@ -16,7 +16,7 @@ class PlaylistTrack extends React.Component{
     fetch(`playlist/${this.props.track._id}`, {
       method: 'PATCH',
       body: JSON.stringify({
-        liked: !this.state.liked
+        liked: !this.props.track.liked
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -24,9 +24,7 @@ class PlaylistTrack extends React.Component{
     }).then((res) => {
       if (res.status === 200) {
         console.log('Updated');
-        this.setState({
-          liked: !this.state.liked
-        });
+        this.props.dispatch(playlistUpdateState(this.props.track._id))
       }
       else {
         console.log('Not updated');
@@ -40,7 +38,7 @@ class PlaylistTrack extends React.Component{
     }).then((res) => {
       if (res.status === 200) {
         console.log('Deleted');
-        this.props.onTrackDelete(this.props.track._id);
+        this.props.dispatch(playlistDelete(this.props.track._id));
       }
       else {
         console.log('Not deleted');
@@ -52,11 +50,11 @@ class PlaylistTrack extends React.Component{
       <li> 
         <span>{this.props.track.name} </span>
         <span><i>{this.props.track.style} </i></span>
-        <span onClick={this.onStatusClick}><b>{this.state.liked? 'Liked' : 'Not liked'} </b></span>
+        <span onClick={this.onStatusClick}><b>{this.props.track.liked? 'Liked' : 'Not liked'} </b></span>
         <button onClick={this.onDeleteClick}>Delete</button>
       </li>
     );
   }
 }
 
-export default PlaylistTrack;
+export default connect()(PlaylistTrack);

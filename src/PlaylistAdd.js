@@ -1,5 +1,8 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
+
+import { playlistAdd } from './actions';
 
 class PlaylistAddInner  extends React.Component{
   constructor(props) {
@@ -46,18 +49,21 @@ class PlaylistAddInner  extends React.Component{
     }).then((res) => {
       return res.json();
     }).then((data) => {
-      this.props.onTrackAdd(data);
+       this.props.dispatch(playlistAdd(data._id, data.name, data.style))
       this.props.history('/');
     });
   }
   render() {
     return(
-      <form onSubmit={this.onAddFormSubmit}>
-        <input type="text" value={this.state.name} onChange={this.onNameChange} placeholder='Name'/>
-        <input type="text" value={this.state.style} onChange={this.onStyleChange} placeholder='Style'/>
-        <input type="submit" value="Add" />
-      </form>
-        )
+      <div className="Add">
+        <NavLink to='/'>Back to list</NavLink>
+        <form onSubmit={this.onAddFormSubmit}>
+          <input type="text" value={this.state.name} onChange={this.onNameChange} placeholder='Name'/>
+          <input type="text" value={this.state.style} onChange={this.onStyleChange} placeholder='Style'/>
+          <input type="submit" value="Add" />
+        </form>
+      </div>
+    )
   }
 }
 
@@ -67,4 +73,4 @@ const PlaylistAdd = (props) => {
   )
 }
 
-export default PlaylistAdd;
+export default connect()(PlaylistAdd);
